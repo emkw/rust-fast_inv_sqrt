@@ -1,0 +1,13 @@
+[package]
+name = "fast_inv_sqrt"
+version = "1.0.0"
+authors = ["emk <rust@emk.one.pl>"]
+license = "WTFPL OR MIT OR Apache-2.0"
+description = "Fast inverse square root algorithm implementation."
+keywords = ["square", "root", "sqrt"]
+repository = "https://github.com/emkw/rust-fast_inv_sqrt"
+readme = "README.md"
+
+[features]
+nightly = []
+omit-checking = []
