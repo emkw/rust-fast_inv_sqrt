@@ -281,6 +281,24 @@ mod test32 {
 
 	#[cfg(feature = "nightly")]
 	#[bench]
+	fn bench_recip_sqrt(b: &mut Bencher) {
+		b.iter(|| {
+			let f = black_box(1.2345f32);
+			f.recip().sqrt()
+		});
+	}
+
+	#[cfg(feature = "nightly")]
+	#[bench]
+	fn bench_sqrt_recip(b: &mut Bencher) {
+		b.iter(|| {
+			let f = black_box(1.2345f32);
+			f.sqrt().recip()
+		});
+	}
+
+	#[cfg(feature = "nightly")]
+	#[bench]
 	fn bench_plain_impl(b: &mut Bencher) {
 		b.iter(|| {
 			let f = black_box(1.2345f32);
@@ -358,6 +376,24 @@ mod test64 {
 		b.iter(|| {
 			let f = black_box(1.2345f64);
 			ref_inv_sqrt64(f)
+		});
+	}
+
+	#[cfg(feature = "nightly")]
+	#[bench]
+	fn bench_recip_sqrt(b: &mut Bencher) {
+		b.iter(|| {
+			let f = black_box(1.2345f64);
+			f.recip().sqrt()
+		});
+	}
+
+	#[cfg(feature = "nightly")]
+	#[bench]
+	fn bench_sqrt_recip(b: &mut Bencher) {
+		b.iter(|| {
+			let f = black_box(1.2345f64);
+			f.sqrt().recip()
 		});
 	}
 
