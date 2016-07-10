@@ -6,6 +6,9 @@
 #[cfg(all(feature = "nightly",test))]
 extern crate test;
 
+#[cfg(test)]
+#[macro_use] extern crate more_asserts;
+
 use std::mem;
 use std::f32;
 use std::f64;
@@ -240,15 +243,23 @@ mod test32 {
 		1.0f32 / f.sqrt()
 	}
 
+	fn relative_difference(lhs: f32, rhs: f32) -> f32 {
+		return 2.0 * (rhs - lhs).abs() / (rhs.abs() + lhs.abs());
+	}
+
 	#[test]
 	fn test_f32() {
 		let value: f32 = 11.1111;
-		assert!(value.inv_sqrt32().abs_sub(0.3f32) <= 0.000001);
+		assert_le!((0.3 - value.inv_sqrt32()).abs(), 0.0005);
 
-		let mut value: f32 = 0.0f32;
+		let mut value: f32 = 0.00000001f32;
 		while value < 100.4f32 {
-			assert!(value.inv_sqrt32().abs_sub(ref_inv_sqrt32(value)) <= 0.000001);
-			value += 0.05f32;
+			let result = value.inv_sqrt32();
+			let ref_result = ref_inv_sqrt32(value);
+			let relative_diff = relative_difference(result, ref_result);
+			//println!("inv_sqrt32() -> {}: {} / {} [{}]", value, result, ref_result, relative_diff);
+			assert_le!(relative_diff, 0.002);
+			value += 0.01f32;
 		}
 	}
 
@@ -267,7 +278,7 @@ mod test32 {
 	#[test]
 	fn test_i8() {
 		let value: i8 = 55;
-		assert!(value.inv_sqrt32().abs_sub(0.1348399725f32) <= 0.000001);
+		assert_le!((0.1348399725 - value.inv_sqrt32()).abs(), 0.00001);
 	}
 
 	#[cfg(feature = "nightly")]
@@ -340,15 +351,23 @@ mod test64 {
 		1.0f64/f.sqrt()
 	}
 
+	fn relative_difference(lhs: f64, rhs: f64) -> f64 {
+		return 2.0 * (rhs - lhs).abs() / (rhs.abs() + lhs.abs());
+	}
+
 	#[test]
 	fn test_f64() {
 		let value: f64 = 11.1111;
-		assert!(value.inv_sqrt64().abs_sub(0.3f64) <= 0.000001);
+		assert_le!((0.3 - value.inv_sqrt64()).abs(), 0.0005);
 
-		let mut value: f64 = 0.0f64;
+		let mut value: f64 = 0.00000001f64;
 		while value < 100.4f64 {
-			assert!(value.inv_sqrt64().abs_sub(ref_inv_sqrt64(value)) <= 0.000001);
-			value += 0.05f64;
+			let result = value.inv_sqrt64();
+			let ref_result = ref_inv_sqrt64(value);
+			let relative_diff = relative_difference(result, ref_result);
+			//println!("inv_sqrt64(): {} -> {} / {} [{}]", value, result, ref_result, relative_diff);
+			assert_le!(relative_diff, 0.002);
+			value += 0.01f64;
 		}
 	}
 
@@ -367,7 +386,7 @@ mod test64 {
 	#[test]
 	fn test_i8() {
 		let value: i8 = 55;
-		assert!(value.inv_sqrt64().abs_sub(0.1348399725f64) <= 0.000001);
+		assert_le!((0.1348399725 - value.inv_sqrt64()).abs(), 0.00001);
 	}
 
 	#[cfg(feature = "nightly")]
