@@ -1,7 +1,7 @@
 //! Famous "Fast inverse square root" algorithm implementation
 //! along with obligatory original comments.
 
-#![cfg_attr(feature = "nightly", feature(test))]
+#![cfg_attr(all(feature = "nightly",test), feature(asm,test,core_intrinsics))]
 
 #[cfg(all(feature = "nightly",test))]
 extern crate test;
@@ -237,6 +237,109 @@ mod test32 {
 
 	#[cfg(feature = "nightly")]
 	use test::{black_box,Bencher};
+
+	#[cfg(all(feature = "nightly", any(target_arch = "x86", target_arch = "x86_64")))]
+	mod asm_x86 {
+		use test::{black_box,Bencher};
+
+		#[inline(always)]
+		fn rsqrtss_mem(f: f32) -> f32 {
+			let ret;
+			unsafe {
+				asm!("rsqrtss $1, $0" : "=x"(ret) : "m"(f) );
+			}
+
+			ret
+		}
+
+		#[inline(always)]
+		fn rsqrtss_reg(f: f32) -> f32 {
+			let ret;
+			unsafe {
+				asm!("rsqrtss $1, $0" : "=x"(ret) : "x"(f) );
+			}
+
+			ret
+		}
+
+		#[test]
+		fn test_rsqrtss_mem() {
+			let value: f32 = 11.1111;
+			let result = rsqrtss_mem(value);
+			assert_le!((0.3 - result).abs(), 0.0005);
+		}
+
+		#[test]
+		fn test_rsqrtss_reg() {
+			let value: f32 = 11.1111;
+			let result = rsqrtss_reg(value);
+			assert_le!((0.3 - result).abs(), 0.0005);
+		}
+
+		#[bench]
+		fn bench_plain_rsqrtss_mem(b: &mut Bencher) {
+			b.iter(|| {
+				let f = black_box(1.2345f32);
+				rsqrtss_mem(f)
+			});
+		}
+
+		#[bench]
+		fn bench_plain_rsqrtss_reg(b: &mut Bencher) {
+			b.iter(|| {
+				let f = black_box(1.2345f32);
+				rsqrtss_reg(f)
+			});
+		}
+
+		#[bench]
+		fn bench_real_rsqrtss_reg_real(b: &mut Bencher) {
+			b.iter(|| {
+				let f = black_box(1.2345f32);
+				let v = black_box(2.3456f32);
+				v * rsqrtss_reg(f)
+			});
+		}
+	}
+
+	#[cfg(feature = "nightly")]
+	mod llvm {
+		use test::{black_box,Bencher};
+
+		#[inline(always)]
+		fn llvm_sqrt32(f: f32) -> f32 {
+			unsafe { ::std::intrinsics::sqrtf32(f) }
+		}
+
+		#[inline(always)]
+		fn llvm_inv_sqrt32(f: f32) -> f32 {
+			1.0 / llvm_sqrt32(f)
+		}
+
+		#[test]
+		fn test_llvm() {
+			let value: f32 = 11.1111;
+			let result = llvm_inv_sqrt32(value);
+			assert_le!((0.3 - result).abs(), 0.0005);
+		}
+
+		#[bench]
+		fn bench_plain_llvm(b: &mut Bencher) {
+			b.iter(|| {
+				let f = black_box(1.2345f32);
+				llvm_inv_sqrt32(f)
+			});
+		}
+
+		#[bench]
+		fn bench_real_llvm(b: &mut Bencher) {
+			b.iter(|| {
+				let f = black_box(1.2345f32);
+				let v = black_box(2.3456f32);
+				v / llvm_sqrt32(f)
+			});
+		}
+	}
 
 	#[inline(always)]
 	fn ref_inv_sqrt32(f: f32) -> f32 {
