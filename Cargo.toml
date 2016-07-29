@@ -1,6 +1,6 @@
 [package]
 name = "fast_inv_sqrt"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["emk <rust@emk.one.pl>"]
 license = "WTFPL OR MIT OR Apache-2.0"
 description = "Fast inverse square root algorithm implementation."
@@ -13,4 +13,4 @@ nightly = []
 omit-checking = []
 
 [dev-dependencies]
-more-asserts = "0.1.*"
+more-asserts = "~0.1"

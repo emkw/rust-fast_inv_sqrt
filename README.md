@@ -11,7 +11,7 @@ Cargo.toml:
 
 ```toml
 [dependencies]
-fast_inv_sqrt = "1.0.0"
+fast_inv_sqrt = "~1.0"
 ```
 
 Code:
@@ -40,16 +40,16 @@ Benchmarks require nightly compiler.
 
 $ cargo bench --features 'nightly'
 ```
-test test32::bench_plain_impl ... bench:           8 ns/iter (+/- 0)
+test test32::bench_plain_impl ... bench:           6 ns/iter (+/- 0)
 test test32::bench_plain_ref  ... bench:          13 ns/iter (+/- 0)
 
-test test32::bench_real_impl  ... bench:           8 ns/iter (+/- 0)
+test test32::bench_real_impl  ... bench:           6 ns/iter (+/- 0)
 test test32::bench_real_ref   ... bench:          13 ns/iter (+/- 0)
 
-test test64::bench_plain_impl ... bench:          10 ns/iter (+/- 0)
+test test64::bench_plain_impl ... bench:           6 ns/iter (+/- 0)
 test test64::bench_plain_ref  ... bench:          20 ns/iter (+/- 0)
 
-test test64::bench_real_impl  ... bench:          10 ns/iter (+/- 0)
+test test64::bench_real_impl  ... bench:           6 ns/iter (+/- 0)
 test test64::bench_real_ref   ... bench:          20 ns/iter (+/- 0)
 ```
 Feature 'omit-checking' disables checks of if value passed is_sign_positive() and 

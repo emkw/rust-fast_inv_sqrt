@@ -32,20 +32,12 @@ pub trait InvSqrt64 {
 impl InvSqrt32 for f32 {
 	fn inv_sqrt32(self: f32) -> f32 {
 		if cfg!(not(feature = "omit-checking")) {
-			if self.is_sign_negative() {
+			if self.signum() != 1.0 {
 				return f32::NAN;
-			}
-			else if !self.is_normal() {
-				if self.is_nan() {
-					return f32::NAN;
-				}
-				else if self.is_infinite() {
-					return 0.0;
-				}
-				else {
-					// Positive 0 et.al.
-					return f32::INFINITY;
-				}
+			} else if self == f32::INFINITY {
+				return 0.0;
+			} else if self < f32::MIN_POSITIVE {
+				return f32::INFINITY;
 			}
 		}
 
@@ -70,20 +62,12 @@ impl InvSqrt32 for f32 {
 impl InvSqrt64 for f64 {
 	fn inv_sqrt64(self: f64) -> f64 {
 		if cfg!(not(feature = "omit-checking")) {
-			if self.is_sign_negative() {
+			if self.signum() != 1.0 {
 				return f64::NAN;
-			}
-			else if !self.is_normal() {
-				if self.is_nan() {
-					return f64::NAN;
-				}
-				else if self.is_infinite() {
-					return 0.0;
-				}
-				else {
-					// Positive 0 et.al.
-					return f64::INFINITY;
-				}
+			} else if self == f64::INFINITY {
+				return 0.0;
+			} else if self < f64::MIN_POSITIVE {
+				return f64::INFINITY;
 			}
 		}
 
@@ -379,6 +363,12 @@ mod test32 {
 	}
 
 	#[test]
+	fn test_negative_zero() {
+		let negative_zero = -0.0f32;
+		assert!(negative_zero.inv_sqrt32().is_nan());
+	}
+
+	#[test]
 	fn test_i8() {
 		let value: i8 = 55;
 		assert_le!((0.1348399725 - value.inv_sqrt32()).abs(), 0.00001);
@@ -484,6 +474,12 @@ mod test64 {
 	fn test_negative() {
 		let negative = -1.0f64;
 		assert!(negative.inv_sqrt64().is_nan());
+	}
+
+	#[test]
+	fn test_negative_zero() {
+		let negative_zero = -0.0f64;
+		assert!(negative_zero.inv_sqrt64().is_nan());
 	}
 
 	#[test]
