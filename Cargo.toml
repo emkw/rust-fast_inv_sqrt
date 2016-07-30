@@ -5,7 +5,7 @@ authors = ["emk <rust@emk.one.pl>"]
 license = "WTFPL OR MIT OR Apache-2.0"
 description = "Fast inverse square root algorithm implementation."
 keywords = ["square", "root", "sqrt"]
-repository = "https://github.com/emkw/rust-fast_inv_sqrt"
+repository = "https://github.com/emkw/rust-fast_inv_sqrt.git"
 readme = "README.md"
 
 [features]
