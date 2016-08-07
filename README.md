@@ -11,7 +11,7 @@ Cargo.toml:
 
 ```toml
 [dependencies]
-fast_inv_sqrt = "~1.0"
+fast_inv_sqrt = "~1.0.1"
 ```
 
 Code:
